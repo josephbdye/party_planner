@@ -9,8 +9,26 @@
 </head>
 <body>
     <h1>Party Planner</h1>
-    <h3><span class='count'>3</span> Parties Tonight</h3>
-    <button id="addButton">Add a Party</button>
+    <h3><span class='count'></span> Upcoming Party(s)</h3>
+    <button id="addButton">Add a Random Party</button>
+    <form id="partyForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+      
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+      
+        <label for="time">Time:</label>
+        <input type="time" id="time" name="time" required><br><br>
+      
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br><br>
+      
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" required></textarea><br><br>
+      
+        <input type="submit" value="Create Your Own Party">
+    </form>
     <ul><span class="partyList"></span></ul>
 </body>
 </html>

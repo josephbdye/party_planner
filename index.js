@@ -2,6 +2,7 @@ let parties = [];
 const spanCount = document.querySelector('.count');
 const partiesList = document.querySelector('ul');
 const addButton = document.querySelector('#addButton');
+const form = document.querySelector('#partyForm');
 
 async function fetchAllParties() {
     try {
@@ -35,10 +36,15 @@ async function generateRandomParty() {
 function render(){
     spanCount.innerHTML = parties.length;
     const html = parties.map(function(party){
+        const eventDate = new Date(party.date);
+        const formattedDate = eventDate.toLocaleDateString();
+        const formattedTime = eventDate.toLocaleTimeString();
+
         return `
           <li>
             <h5>${party.name}</h5>
-            <p>Date/Time: ${party.date}</p>
+            <p>Date: ${formattedDate}</p>
+            <p>Time: ${formattedTime}</p>
             <p>Location: ${party.location}</p>
             <p>Description: ${party.description}</p>
           </li>
@@ -47,6 +53,25 @@ function render(){
 
     partiesList.innerHTML = html;
 };
+
+function addPartyToList(party) {
+    parties.push(party);
+    render();
+}
+
+form.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const newParty = {};
+    formData.forEach((value, key) => {
+        newParty[key] = value;
+    });
+    
+    if (Object.keys(newParty).length > 0) {
+        addPartyToList(newParty);
+        form.reset();
+    }
+});
 
 addButton.addEventListener('click', async function() {
     const newParty = await generateRandomParty();
