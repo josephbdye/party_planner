@@ -1,0 +1,23 @@
+body  {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.count  {
+    background-color: blue;
+    color: antiquewhite;
+}
+
+#addButton  {
+    background-color: beige;
+}
+
+.partyList  {
+    border: solid 2px blue;
+    padding: 0;
+}
+
+.partyList  li {
+    border: solid 1px red;
+    padding: 0.5rem;
+    cursor: pointer;
+}
