@@ -2,11 +2,59 @@ let parties = [];
 const spanCount = document.querySelector('.count');
 const partiesList = document.querySelector('ul');
 const addButton = document.querySelector('#addButton');
-const partyList = document.querySelector('.partyList');
 
-addButton.addEventListener('click', function(){
-    parties.push(generateRandom());
-    render();
+async function fetchAllParties() {
+    try {
+        const response = await fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2309_ftb_et_web_am/events');
+        const json = await response.json();
+        return json.data;
+    } catch (ex) {
+        console.log(ex);
+        return [];
+    }
+};
+
+async function generateRandomParty() {
+    const allParties = await fetchAllParties();
+
+    if (allParties.length === 0) {
+        return null;
+    }
+
+    const newParty = {};
+    const keys = Object.keys(allParties[0]);
+    keys.forEach(key => {
+        const randomIdx = Math.floor(Math.random() * allParties.length);
+        const randomValue = allParties[randomIdx][key];
+        newParty[key] = randomValue;
+    });
+
+    return newParty;
+};
+
+function render(){
+    spanCount.innerHTML = parties.length;
+    const html = parties.map(function(party){
+        return `
+          <li>
+            <h5>${party.name}</h5>
+            <p>Date/Time: ${party.date}</p>
+            <p>Location: ${party.location}</p>
+            <p>Description: ${party.description}</p>
+          </li>
+        `;
+    }).join(' ');
+
+    partiesList.innerHTML = html;
+};
+
+addButton.addEventListener('click', async function() {
+    const newParty = await generateRandomParty();
+    console.log(newParty);
+    if (newParty) {
+        parties.push(newParty);
+        render();
+    }
 });
 
 partiesList.addEventListener('click', (ev)=>  {
@@ -20,53 +68,10 @@ partiesList.addEventListener('click', (ev)=>  {
     }
 });
 
-function generateRandom() {
-    if (parties.length === 0) {
-        return fetchParties();
-    }
-
-    const newParty = {};
-    const randomPartyIdx = Math.floor(Math.random()*parties.length);
-    const randomParty = parties[randomPartyIdx];
-
-    const keys = Object.keys(randomParty);
-    keys.forEach(key => {
-        const randomIdx = Math.floor(Math.random()*parties.length);
-        const randomValue = parties[randomIdx][key];
-        newParty[key] = randomValue;
-    });
-
-    return newParty;
-};
-
-function render(){
-    spanCount.innerHTML = parties.length;
-    const html = parties.map(function(party){
-        console.log(party);
-        return `
-          <li>
-            <h5>${party.name}</h5>
-            <p>Date/Time: ${party.date}</p>
-            <p>Location: ${party.location}</p>
-            <p>Description: ${party.description}</p>
-          </li>
-        `;
-    }).join(' ')
-    partiesList.innerHTML = html;
-};
-
-render();
-
-async function fetchParties(){
-    try  {
-    const response = await fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2309_ftb_et_web_am/events');
-    const json = await response.json();
-    parties = json.data;
+async function renderAllParties() {
+    const allParties = await fetchAllParties();
+    parties = allParties;
     render();
-    }
-    catch(ex){
-        console.log(ex);
-    }
-};
+}
 
-fetchParties();
+renderAllParties();
